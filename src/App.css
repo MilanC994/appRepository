@@ -1,11 +1,21 @@
-#root
-{
-  height: 100vh;
+body, html {
+  height: 100%;
+  margin: 0;
+  width:device-width;
 }
-.App {
+
+#root {
   text-align: center;
   background-image: url('./imgs/background.jpeg');
+ 
+  
+  background-size: 100%;
+  
+  background-repeat: repeat;
+  background-size: cover;
   height: 100%;
+  
+
 }
 
 .App-logo {

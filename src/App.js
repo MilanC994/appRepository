@@ -10,14 +10,7 @@ import Background from './imgs/background.jpeg'
 
 
 function App() {
-  const style={
-    backgroundImage: "url(" + Background + ")",
-   backgroundPosition: 'center',
-   backgroundSize: 'cover',
-   backgroundRepeat: 'repeat',
-   height:'100vh'
- 
-}
+
   return (
     <Provider store={store}>
     <div  className="App">
