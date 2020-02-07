@@ -20,7 +20,7 @@ function App() {
 }
   return (
     <Provider store={store}>
-    <div style={style}  className="App">
+    <div  className="App">
       <Coins/>
     </div>
     </Provider>
