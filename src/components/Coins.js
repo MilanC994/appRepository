@@ -4,8 +4,6 @@ import {connect} from 'react-redux'
 import { incrementCoin, decrementCoin,calculateDiff,setPayed,setToPay } from '../redux/coins/coinActions'
 import  Pay from '../pay'
 
-import Background from '../imgs/background.jpeg'
-
 
 
 class Coins extends Component {
@@ -18,9 +16,8 @@ class Coins extends Component {
        <React.Fragment>
         <div > 
         <table style={{margin:"auto"}}>
-            <tr>
             {this.props.coinProp.map( coin=><CoinContainer key={coin.id} disable = {this.props.btnDisabled}   id={coin.id} value = {coin.value} decrementProp ={this.props.decrementProp} incrementProp = {this.props.incrementProp} count = {coin.count}/>)}
-            </tr>
+
        </table>
        <button className='btn-primary btn-success' disabled={this.props.btnDisabled} onClick={()=>this.props.setToPay()}><h2> Apply:</h2></button>
       

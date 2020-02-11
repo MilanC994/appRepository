@@ -5,6 +5,7 @@ function CoinContainer(props) {
     
     
     return (
+        <tr>
         <div className="container">
            
            <td> <span className ="badge m-2 badge-secondary"><h3>{props.value}</h3></span></td>
@@ -14,6 +15,7 @@ function CoinContainer(props) {
             
             
         </div>
+        </tr>
     )
 }
 

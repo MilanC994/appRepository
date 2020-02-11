@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import Coins from './components/Coins';
 
-import Background from './imgs/background.jpeg'
 
 
 function App() {
