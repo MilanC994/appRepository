@@ -13,6 +13,7 @@ function App() {
   return (
     <Provider store={store}>
     <div  className="App">
+      <h1 style={{color:'orange'}}>Change Application</h1>
       <Coins/>
     </div>
     </Provider>
