@@ -16,8 +16,9 @@ class Coins extends Component {
        <React.Fragment>
         <div > 
         <table style={{margin:"auto"}}>
+            <tbody>
             {this.props.coinProp.map( coin=><CoinContainer key={coin.id} disable = {this.props.btnDisabled}   id={coin.id} value = {coin.value} decrementProp ={this.props.decrementProp} incrementProp = {this.props.incrementProp} count = {coin.count}/>)}
-
+            </tbody>
        </table>
        <button className='btn-primary btn-success' disabled={this.props.btnDisabled} onClick={()=>this.props.setToPay()}><h2> Apply:</h2></button>
       
