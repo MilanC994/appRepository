@@ -16,47 +16,121 @@ const initialState = {
     difference:0,
     outputString:'',
     buttonDIsabled:false,
-    disablePay:true
+    disablePay:true,
+    numOfCoinsUsed:0
+}
+
+function checkIfThereAreEnoughCoins(state)
+{
+    let sumOfAllCoins=0
+    for(let i=0;i<state.coin.length;i++)
+    {
+        sumOfAllCoins+=(state.coin[i].count*state.coin[i].value)
+    }
+
+    if(sumOfAllCoins>state.difference)
+    {return true}
+    return false
 }
 
 
-function reduction(state,stateIfOutOfCoins,ind)
+function doIt(state, stateIfOutOfCoins) 
 {
-    if(ind>state.coin.length-1 && state.difference!=0)
+    if(checkIfThereAreEnoughCoins(state)==false)
     {
-    return produce(stateIfOutOfCoins, draft=>{
-        draft.outputString='No enough coins to return change, please input less money ! Change:'+draft.difference
-        draft.disablePay=false;
-        draft.buttonDIsabled=true;
-    })
+        state={...state,
+        outputString:"No Enough Coins to Return Change: "+state.difference,
+        buttonDIsabled:true,
+        disablePay:false
+    }
+            return state;
+    }
+    
+    else if(state.difference==0)
+    {
+        return state
+    }
+    
+    let pomState = {...state,
+    numOfCoinsUsed:9999
+    }
+    let multiplyFactor = 1;
+    let limit,pomLimit
+    for(let k=0;k<state.coin.length-1;k++)
+    {
+        limit=Math.floor((state.difference/state.coin[k].value)+0.001)
+        pomLimit=limit
+
+        while(state.coin[k].count!=0 && limit>0)
+    {
+        
+    for(let i = 0; i<state.coin.length;i++)
+    {
+       
+        if(i==k)
+        {i++}
+            while(state.coin[k].count!=0 && pomLimit>0 && state.difference>=state.coin[k].value)
+            {
+                    
+                    state =  produce(state, draft=>{
+                    draft.coin[k].count-=1
+                    draft.difference-=state.coin[k].value
+                    draft.difference= Number(draft.difference).toFixed(1)
+                    draft.numOfCoinsUsed+=1
+                  
+                    pomLimit--
+                  
+                })
+                if(state.numOfCoinsUsed>pomState.numOfCoinsUsed)
+                    break;
+            }
+         
+        while(state.coin[i].count!=0 && state.difference>=state.coin[i].value)
+        {
+            
+                state =  produce(state, draft=>{
+                draft.coin[i].count-=1
+                draft.difference-=state.coin[i].value
+                draft.difference= Number(draft.difference).toFixed(1)
+                draft.numOfCoinsUsed+=1
+                
+            })
+            if(state.numOfCoinsUsed>pomState.numOfCoinsUsed)
+                    break;
+        }
+ 
     
     }
-    else if(state.difference==0){
-       if(state.outputString.length==0)
-       {
-        return {...state,
-        outputString:'Accepted !'
-        };}
-        return state
-
-    }
+    if(state.difference==0 && state.numOfCoinsUsed<pomState.numOfCoinsUsed)
+        {
+   
+            pomState={...state,
+            outputString:"Accelpted !"}
+           
+        }
         
-   if( state.coin[ind].count!=0 && state.difference>=state.coin[ind].value) 
-   {
-        console.log(state.difference, state.coin[ind].value, state.difference-state.coin[ind].value)   
-       return  reduction((produce(state, draft=>{
-        draft.coin[ind].count-=1
-        draft.difference-=state.coin[ind].value
-        draft.difference= Number(draft.difference).toFixed(1)
-    })),stateIfOutOfCoins,ind)
-    }
-    else if(state.coin[ind].count==0 || (state.difference<state.coin[ind].value))
-    {
-        return reduction(state,stateIfOutOfCoins,ind+1)
-    }
+        state={...stateIfOutOfCoins}
    
     
+   limit--
+   pomLimit=limit;
+   
 }
+
+}
+    
+    if(pomState.difference!=0)
+    {
+        pomState={...stateIfOutOfCoins,
+        outputString:"No Enough coins to return change",
+        buttonDIsabled:true,
+        disablePay:false
+        }
+    }
+    return pomState;
+}
+
+
 
 function incrCoin(state = initialState,action)
 {
@@ -84,7 +158,7 @@ function setPayedAmount(state,action)
 {
     if(action.payload-state.toPay>=0)
     { 
-        console.log(action.payload +" JE VECE OD "+state.toPay)
+   
        return produce(state, draft=>{
         draft.payed = action.payload
         draft.difference=Number(action.payload-draft.toPay).toFixed(1)
@@ -96,7 +170,7 @@ function setPayedAmount(state,action)
     }
     else
     {
-        console.log("U ELSE")
+   
         return produce(state,draft=>{
             draft.outputString='You need to pay more money, input correct amount !'
             draft.difference=0;
@@ -133,7 +207,7 @@ const coinReducer = (state = initialState,action)=>
         case CALCULATE:
             {
                     console.log(state.difference+"  RAZLIKA")
-                    return     reduction(state,state,0)
+                    return     doIt(state,state)
                     
             }
         case SETPAYED:
