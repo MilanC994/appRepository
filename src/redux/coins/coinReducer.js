@@ -54,7 +54,7 @@ function doIt(state, stateIfOutOfCoins)
     let pomState = {...state,
     numOfCoinsUsed:9999
     }
-    let multiplyFactor = 1;
+
     let limit,pomLimit
     for(let k=0;k<state.coin.length-1;k++)
     {
@@ -121,10 +121,21 @@ function doIt(state, stateIfOutOfCoins)
     
     if(pomState.difference!=0)
     {
+        if((state.coin[5].value*state.coin[5].count)>=state.difference)
+        {
+            let newCount = state.difference/state.coin[5].value
+            pomState =  produce(state, draft=>{
+                draft.coin[5].count -= newCount
+                draft.outputString = "Accepted !" 
+
+        })
+    }
+        else{
         pomState={...stateIfOutOfCoins,
         outputString:"No Enough coins to return change",
         buttonDIsabled:true,
         disablePay:false
+        }
         }
     }
     return pomState;
