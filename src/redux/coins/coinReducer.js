@@ -41,6 +41,7 @@ function doIt(state)
         return {...state,
             outputString:"Accepted!!"}
     }
+    //da ne radi petlje ako je nemoguce
     else if(checkIfThereAreEnoughCoins(state)==false)
     {
         state={...state,
@@ -135,9 +136,10 @@ function doIt(state)
 
         })
     }
+    
         else{
         pomState={...stateIfOutOfCoins,
-        outputString:"No Enough coins to return change",
+        outputString:"Not possible to return change with current coins on stack",
         buttonDIsabled:true,
         disablePay:false
         }
