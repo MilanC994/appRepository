@@ -28,7 +28,7 @@ function checkIfThereAreEnoughCoins(state)
         sumOfAllCoins+=(state.coin[i].count*state.coin[i].value)
     }
 
-    if(sumOfAllCoins>state.difference)
+    if(sumOfAllCoins>=state.difference)
     {return true}
     return false
 }
@@ -109,7 +109,7 @@ function doIt(state)
         {
    
             pomState={...state,
-            outputString:"Accelpted !"}
+            outputString:"Accepted !"}
            
         }
         
@@ -131,7 +131,7 @@ function doIt(state)
             let newCount = state.difference/state.coin[5].value
             pomState =  produce(state, draft=>{
                 draft.coin[5].count -= newCount
-                draft.coin[5].count = Number(draft.coin[5].count).toFixed(0)
+                draft.coin[5].count = Math.floor(draft.coin[5].count+0.001)
                 draft.outputString = "Accepted !" 
 
         })
