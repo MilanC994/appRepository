@@ -36,13 +36,7 @@ function checkIfThereAreEnoughCoins(state)
 
 function doIt(state) 
 {
-     if(state.difference==0)
-    {
-        return {...state,
-            outputString:"Accepted!!"}
-    }
-    //da ne radi petlje ako je nemoguce
-    else if(checkIfThereAreEnoughCoins(state)==false)
+  if(checkIfThereAreEnoughCoins(state)==false)
     {
         state={...state,
         outputString:"No Enough Coins to Return Change: "+state.difference,
@@ -174,7 +168,9 @@ function decrCoin(state , action)
 }
 function setPayedAmount(state,action)
 {
-    if(action.payload-state.toPay>=0)
+    var result = Number(action.payload-state.toPay).toFixed(1); 
+    console.log("REZULTAT : "+ result)
+    if(result>0)
     { 
         doCalculation=true;
        return produce(state, draft=>{
@@ -185,6 +181,16 @@ function setPayedAmount(state,action)
         draft.outputString=''
         })
         
+    }
+    else if(result==0)
+    {
+        doCalculation=false;
+       return produce(state, draft=>{
+        draft.difference=0
+        draft.disablePay=true;
+        draft.buttonDIsabled=false;
+        draft.outputString='Accepted'
+        }) 
     }
     else
     {
