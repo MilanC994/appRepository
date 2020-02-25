@@ -1,7 +1,7 @@
 import {INCREMENT_COIN, DECREMENT_COIN,CALCULATE,SETTOPAY,SETPAYED} from './coinExport'
 import produce from 'immer'
 
-
+var doCalculation = false;
 
 const initialState = {
     coin:[{id:0,value:5.0, count : 10},
@@ -36,7 +36,12 @@ function checkIfThereAreEnoughCoins(state)
 
 function doIt(state) 
 {
-    if(checkIfThereAreEnoughCoins(state)==false)
+     if(state.difference==0)
+    {
+        return {...state,
+            outputString:"Accepted!!"}
+    }
+    else if(checkIfThereAreEnoughCoins(state)==false)
     {
         state={...state,
         outputString:"No Enough Coins to Return Change: "+state.difference,
@@ -46,10 +51,7 @@ function doIt(state)
             return state;
     }
     
-    else if(state.difference==0)
-    {
-        return state
-    }
+    
     let stateIfOutOfCoins = {...state}
     
     let pomState = {...state,
@@ -172,7 +174,7 @@ function setPayedAmount(state,action)
 {
     if(action.payload-state.toPay>=0)
     { 
-   
+        doCalculation=true;
        return produce(state, draft=>{
         draft.payed = action.payload
         draft.difference=Number(action.payload-draft.toPay).toFixed(1)
@@ -184,10 +186,11 @@ function setPayedAmount(state,action)
     }
     else
     {
-   
+        doCalculation=false;
         return produce(state,draft=>{
             draft.outputString='You need to pay more money, input correct amount !'
             draft.difference=0;
+
         })
     }
 
@@ -221,7 +224,9 @@ const coinReducer = (state = initialState,action)=>
         case CALCULATE:
             {
                     console.log(state.difference+"  RAZLIKA")
-                    return     doIt(state)
+                   if(doCalculation)
+                   { return     doIt(state)}
+                   else{return state}
                     
             }
         case SETPAYED:
