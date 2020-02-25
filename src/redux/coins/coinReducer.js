@@ -34,7 +34,7 @@ function checkIfThereAreEnoughCoins(state)
 }
 
 
-function doIt(state, stateIfOutOfCoins) 
+function doIt(state) 
 {
     if(checkIfThereAreEnoughCoins(state)==false)
     {
@@ -50,6 +50,7 @@ function doIt(state, stateIfOutOfCoins)
     {
         return state
     }
+    let stateIfOutOfCoins = {...state}
     
     let pomState = {...state,
     numOfCoinsUsed:9999
@@ -123,9 +124,11 @@ function doIt(state, stateIfOutOfCoins)
     {
         if((state.coin[5].value*state.coin[5].count)>=state.difference)
         {
+            console.log("RAZLIKA je:  "+state.difference)
             let newCount = state.difference/state.coin[5].value
             pomState =  produce(state, draft=>{
                 draft.coin[5].count -= newCount
+                draft.coin[5].count = Number(draft.coin[5].count).toFixed(0)
                 draft.outputString = "Accepted !" 
 
         })
@@ -218,7 +221,7 @@ const coinReducer = (state = initialState,action)=>
         case CALCULATE:
             {
                     console.log(state.difference+"  RAZLIKA")
-                    return     doIt(state,state)
+                    return     doIt(state)
                     
             }
         case SETPAYED:
