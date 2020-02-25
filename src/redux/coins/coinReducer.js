@@ -39,7 +39,7 @@ function doIt(state)
   if(checkIfThereAreEnoughCoins(state)==false)
     {
         state={...state,
-        outputString:"No Enough Coins to Return Change: "+state.difference,
+        outputString:"No enough Coins to Return Change: "+state.difference,
         buttonDIsabled:true,
         disablePay:false
     }
