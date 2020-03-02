@@ -53,21 +53,24 @@ function doIt(state)
     numOfCoinsUsed:9999
     }
 
-    let limit,pomLimit
+  
+    let multiplyFactor
     for(let k=0;k<state.coin.length-1;k++)
     {
-        limit=Math.floor((state.difference/state.coin[k].value)+0.001)
-        pomLimit=limit
+        
+        multiplyFactor=1
 
-        while(state.coin[k].count!=0 && limit>0)
+    while(state.coin[k].count!=0 && state.coin[k].value*multiplyFactor<=state.difference)
     {
+
+        
         
     for(let i = 0; i<state.coin.length;i++)
     {
        
         if(i==k)
         {i++}
-            while(state.coin[k].count!=0 && pomLimit>0 && state.difference>=state.coin[k].value)
+            while(state.coin[k].count!=0 &&  state.difference>=state.coin[k].value*multiplyFactor)
             {
                     
                     state =  produce(state, draft=>{
@@ -76,7 +79,7 @@ function doIt(state)
                     draft.difference= Number(draft.difference).toFixed(1)
                     draft.numOfCoinsUsed+=1
                   
-                    pomLimit--
+                   
                   
                 })
                 if(state.numOfCoinsUsed>pomState.numOfCoinsUsed)
@@ -110,8 +113,7 @@ function doIt(state)
         state={...stateIfOutOfCoins}
    
     
-   limit--
-   pomLimit=limit;
+   multiplyFactor++
    
 }
 
@@ -121,7 +123,7 @@ function doIt(state)
     {
         if((state.coin[5].value*state.coin[5].count)>=state.difference)
         {
-            console.log("RAZLIKA je:  "+state.difference)
+           
             let newCount = state.difference/state.coin[5].value
             pomState =  produce(state, draft=>{
                 draft.coin[5].count -= newCount
