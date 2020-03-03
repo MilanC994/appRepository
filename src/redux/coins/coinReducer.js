@@ -54,7 +54,7 @@ function doIt(state)
     }
 
   
-    let multiplyFactor
+    let multiplyFactor,divideRes,deduct
     for(let k=0;k<state.coin.length-1;k++)
     {
         
@@ -70,6 +70,7 @@ function doIt(state)
        
         if(i==k)
         {i++}
+        
             while(state.coin[k].count!=0 &&  state.difference>=state.coin[k].value*multiplyFactor)
             {
                     
@@ -85,23 +86,28 @@ function doIt(state)
                 if(state.numOfCoinsUsed>pomState.numOfCoinsUsed)
                     break;
             }
-         
-        while(state.coin[i].count!=0 && state.difference>=state.coin[i].value)
-        {
-            
-                state =  produce(state, draft=>{
-                draft.coin[i].count-=1
-                draft.difference-=state.coin[i].value
-                draft.difference= Number(draft.difference).toFixed(1)
-                draft.numOfCoinsUsed+=1
+            if(state.difference<state.coin[i].value)
+            {continue}
+            else{
+
+                divideRes = Math.floor((state.difference/state.coin[i].value)+0.01)
+                divideRes<=state.coin[i].count ? (deduct=divideRes):(deduct=state.coin[i].count)             
                 
-            })
-            if(state.numOfCoinsUsed>pomState.numOfCoinsUsed)
-                    break;
+                    state =  produce(state, draft=>{
+                    draft.coin[i].count-=deduct
+                    draft.difference-=(deduct *state.coin[i].value)
+                    draft.difference= Number(draft.difference).toFixed(1)
+                    draft.numOfCoinsUsed+=deduct
+                    
+                })
         }
+            if(state.numOfCoinsUsed>pomState.numOfCoinsUsed || state.difference==0)
+                    break;
+        
  
     
     }
+    
     if(state.difference==0 && state.numOfCoinsUsed<pomState.numOfCoinsUsed)
         {
    
@@ -171,7 +177,7 @@ function decrCoin(state , action)
 function setPayedAmount(state,action)
 {
     var result = Number(action.payload-state.toPay).toFixed(1); 
-    console.log("REZULTAT : "+ result)
+    
     if(result>0)
     { 
         doCalculation=true;
