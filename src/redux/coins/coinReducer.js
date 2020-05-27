@@ -1,8 +1,6 @@
 import {INCREMENT_COIN, DECREMENT_COIN,CALCULATE,SETTOPAY,SETPAYED} from './coinExport'
 import produce from 'immer'
 
-var doCalculation = false;
-
 const initialState = {
     coin:[{id:0,value:5.0, count : 10},
         {id:1,value:2.0, count : 10},
@@ -33,122 +31,133 @@ function checkIfThereAreEnoughCoins(state)
     return false
 }
 
+function doStaff(state){
 
-function doIt(state) 
-{
-  if(checkIfThereAreEnoughCoins(state)==false)
-    {
-        state={...state,
-        outputString:"No enough Coins to Return Change: "+state.difference,
-        buttonDIsabled:true,
-        disablePay:false
-    }
-            return state;
+    if(!checkIfThereAreEnoughCoins(state)){
+        return {...state,
+            outputString:"No Enough Coins To Return The Chamge",
+            buttonDIsabled:true,
+            disablePay:false
+        }
     }
     
-    
-    let stateIfOutOfCoins = {...state}
-    
-    let pomState = {...state,
-    numOfCoinsUsed:9999
+    let finalState = {
+        ...state,
+        numOfCoinsUsed:99999
     }
 
-  
-    let multiplyFactor,divideRes,deduct
-    for(let k=0;k<state.coin.length-1;k++)
-    {
-        
-        multiplyFactor=1
-
-    while(state.coin[k].count!=0 && state.coin[k].value*multiplyFactor<=state.difference)
-    {
-
-        
-        
-    for(let i = 0; i<state.coin.length;i++)
-    {
-       
-        if(i==k)
-        {i++}
-        
-            while(state.coin[k].count!=0 &&  state.difference>=state.coin[k].value*multiplyFactor)
-            {
-                    
-                    state =  produce(state, draft=>{
-                    draft.coin[k].count-=1
-                    draft.difference-=state.coin[k].value
-                    draft.difference= Number(draft.difference).toFixed(1)
-                    draft.numOfCoinsUsed+=1
-                  
-                   
-                  
-                })
-                if(state.numOfCoinsUsed>pomState.numOfCoinsUsed)
-                    break;
+    let pomState={...state,
+                numOfCoinsUsed:0
             }
-            if(state.difference<state.coin[i].value)
-            {continue}
-            else{
+    
+        let redoIndex =0;
+        let limit=0;
 
-                divideRes = Math.floor((state.difference/state.coin[i].value)+0.01)
-                divideRes<=state.coin[i].count ? (deduct=divideRes):(deduct=state.coin[i].count)             
+       //Calculating using modified greedy algorithm
+       //take one index, first max number of times, then max-1, max-2..
+       //compare number of coins used in each calculation and save the lowest
+        while(redoIndex<pomState.coin.length){                                              
+
+            if(pomState.coin[redoIndex].value>pomState.difference)                         
+                redoIndex++;
+            
+            let maxNum = Math.floor(pomState.difference/pomState.coin[redoIndex].value)   
+            let deduct = maxNum-limit;                                                    
+            
+             deduct = deduct>pomState.coin[redoIndex].count ? pomState.coin[redoIndex].count : deduct
                 
-                    state =  produce(state, draft=>{
-                    draft.coin[i].count-=deduct
-                    draft.difference-=(deduct *state.coin[i].value)
-                    draft.difference= Number(draft.difference).toFixed(1)
-                    draft.numOfCoinsUsed+=deduct
-                    
+            if(deduct>0){                                   
+                pomState=produce(pomState,draft => {
+                    draft.difference = ((draft.difference - (draft.coin[redoIndex].value * deduct )) + 0.001).toFixed(1)
+                    draft.coin[redoIndex].count-=deduct                                                                 
+                    draft.numOfCoinsUsed+= deduct                                                                    
+                    draft.outputString=""
+
                 })
-        }
-            if(state.numOfCoinsUsed>pomState.numOfCoinsUsed || state.difference==0)
-                    break;
+                
+                pomState=calculate(pomState,0,redoIndex) 
+                   
+                if(pomState.numOfCoinsUsed<finalState.numOfCoinsUsed) 
+                        finalState={...pomState}
+                
+                pomState={...state,
+                            numOfCoinsUsed:0
+                        }
+                
+                limit++;                                  
+            
+            }
+            else{
+                redoIndex++;
+            }
         
- 
-    
-    }
-    
-    if(state.difference==0 && state.numOfCoinsUsed<pomState.numOfCoinsUsed)
-        {
-   
-            pomState={...state,
-            outputString:"Accepted !"}
-           
         }
-        
-        state={...stateIfOutOfCoins}
-   
-    
-   multiplyFactor++
-   
-}
+
+       if(finalState.outputString==="Not Possible to return change"){
+            
+            return {...state,
+                    outputString:"Not Possible to return change"
+                }
+            }
+        return finalState
 
 }
+
+function calculate(state, index,skipIndex){
+
     
-    if(pomState.difference!=0)
+
+
+    if(index===skipIndex)
+        index++;
+
+    if(state.difference==0){
+        
+
+        return {...state,
+            outputString:"Accepted"
+        }
+    }
+    
+    if( index>5 && state.difference != 0 )
     {
-        if((state.coin[5].value*state.coin[5].count)>=state.difference)
-        {
-           
-            let newCount = state.difference/state.coin[5].value
-            pomState =  produce(state, draft=>{
-                draft.coin[5].count -= newCount
-                draft.coin[5].count = Math.floor(draft.coin[5].count+0.001)
-                draft.outputString = "Accepted !" 
-
-        })
+        return {...state,
+                outputString:"Not Possible to return change",
+                numOfCoinsUsed:999
+            }
     }
     
-        else{
-        pomState={...stateIfOutOfCoins,
-        outputString:"Not possible to return change with current coins on stack",
-        buttonDIsabled:true,
-        disablePay:false
-        }
-        }
+
+    const deductFromCoinsCount = Math.floor(state.difference/state.coin[index].value) 
+    
+    
+    if(deductFromCoinsCount>0 && state.coin[index].count>=deductFromCoinsCount ){ 
+        
+        state = produce(state,draft=>{
+            draft.difference = ((draft.difference - (state.coin[index].value * deductFromCoinsCount )) + 0.001).toFixed(1)
+            draft.coin[index].count-=deductFromCoinsCount 
+            draft.numOfCoinsUsed+= deductFromCoinsCount
+            draft.outputString=""
+        })
+        return calculate(state,index+1,skipIndex)
     }
-    return pomState;
+    if(deductFromCoinsCount>0 && state.coin[index].count<deductFromCoinsCount){
+        state = produce(state,draft=>{
+            draft.difference = ((draft.difference - (state.coin[index].value * state.coin[index].count)) + 0.001).toFixed(1)
+            draft.coin[index].count=0
+            draft.numOfCoinsUsed+= draft.coin[index].count
+            draft.outputString=""
+        })
+        return calculate(state,index+1, skipIndex)
+    }
+
+    if(state.difference<state.coin[index].value || state.coin[index].count<1){
+        return calculate(state,index+1, skipIndex)
+    }
+    
 }
+
+
 
 
 
@@ -165,14 +174,14 @@ function decrCoin(state , action)
 {
     if(state.coin[action.payload].count>0)
     {
-  return   produce(state, draft=>{
-         draft.coin[action.payload].count-=1
+        return   produce(state, draft=>{
+                draft.coin[action.payload].count-=1
        
     })
   }
         
     
-    else {return state}
+    else return state
 }
 function setPayedAmount(state,action)
 {
@@ -180,7 +189,6 @@ function setPayedAmount(state,action)
     
     if(result>0)
     { 
-        doCalculation=true;
        return produce(state, draft=>{
         draft.payed = action.payload
         draft.difference=Number(action.payload-draft.toPay).toFixed(1)
@@ -192,7 +200,6 @@ function setPayedAmount(state,action)
     }
     else if(result==0)
     {
-        doCalculation=false;
        return produce(state, draft=>{
         draft.difference=0
         draft.disablePay=true;
@@ -202,7 +209,6 @@ function setPayedAmount(state,action)
     }
     else
     {
-        doCalculation=false;
         return produce(state,draft=>{
             draft.outputString='You need to pay more money, input correct amount !'
             draft.difference=0;
@@ -239,10 +245,8 @@ const coinReducer = (state = initialState,action)=>
                     
         case CALCULATE:
             {
-                    console.log(state.difference+"  RAZLIKA")
-                   if(doCalculation)
-                   { return     doIt(state)}
-                   else{return state}
+                    
+                  return doStaff(state)
                     
             }
         case SETPAYED:
