@@ -30,7 +30,7 @@ function doStaff(state) {
     ...state,
     numOfCoinsUsed: 99999,
   };
-  console.log(state.difference);
+
   let pomState = { ...state, numOfCoinsUsed: 0 };
 
   let redoIndex = 0;
