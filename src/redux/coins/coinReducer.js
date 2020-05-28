@@ -57,6 +57,7 @@ function doStaff(state) {
   let redoIndex = 0;
   let limit = 0;
 
+  console.log(pomState);
   //Calculating using modified greedy algorithm
   //take one index, first max number of times, then max-1, max-2..
   //compare number of coins used in each calculation and save the lowest
@@ -96,6 +97,7 @@ function doStaff(state) {
       limit++;
     } else {
       redoIndex++;
+      limit = 0;
     }
   }
 
