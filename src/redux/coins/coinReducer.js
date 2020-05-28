@@ -66,12 +66,13 @@ function doStaff(state) {
     let maxNum = Math.floor(
       pomState.difference / pomState.coin[redoIndex].value
     );
-    let deduct = maxNum - limit;
 
-    deduct =
-      deduct > pomState.coin[redoIndex].count
+    maxNum =
+      maxNum > pomState.coin[redoIndex].count
         ? pomState.coin[redoIndex].count
-        : deduct;
+        : maxNum;
+
+    let deduct = maxNum - limit;
 
     if (deduct > 0) {
       pomState = produce(pomState, (draft) => {
