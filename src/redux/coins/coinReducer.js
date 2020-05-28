@@ -25,39 +25,17 @@ const initialState = {
   numOfCoinsUsed: 0,
 };
 
-function checkIfThereAreEnoughCoins(state) {
-  let sumOfAllCoins = 0;
-  for (let i = 0; i < state.coin.length; i++) {
-    sumOfAllCoins += state.coin[i].count * state.coin[i].value;
-  }
-
-  if (sumOfAllCoins >= state.difference) {
-    return true;
-  }
-  return false;
-}
-
 function doStaff(state) {
-  if (!checkIfThereAreEnoughCoins(state)) {
-    return {
-      ...state,
-      outputString: "No Enough Coins To Return The Chamge",
-      buttonDIsabled: true,
-      disablePay: false,
-    };
-  }
-
   let finalState = {
     ...state,
     numOfCoinsUsed: 99999,
   };
-
+  console.log(state.difference);
   let pomState = { ...state, numOfCoinsUsed: 0 };
 
   let redoIndex = 0;
   let limit = 0;
 
-  console.log(pomState);
   //Calculating using modified greedy algorithm
   //take one index, first max number of times, then max-1, max-2..
   //compare number of coins used in each calculation and save the lowest
@@ -101,24 +79,28 @@ function doStaff(state) {
     }
   }
 
-  if (finalState.outputString === "Not Possible to return change") {
-    return { ...state, outputString: "Not Possible to return change" };
+  if (finalState.difference != 0) {
+    return {
+      ...state,
+      outputString: "Not Possible to return change",
+      disablePay: false,
+      buttonDIsabled: true,
+    };
   }
-  return finalState;
+  return { ...finalState, outputString: "Accepted!" };
 }
 
-function calculate(state, index, skipIndex) {
+function calculate(state, index, skipIndex, numofCoins) {
   if (index === skipIndex) index++;
 
   if (state.difference == 0) {
-    return { ...state, outputString: "Accepted" };
+    return state;
   }
 
   if (index > 5 && state.difference != 0) {
     return {
       ...state,
-      outputString: "Not Possible to return change",
-      numOfCoinsUsed: 999,
+      numOfCoinsUsed: 99999,
     };
   }
 
@@ -138,7 +120,6 @@ function calculate(state, index, skipIndex) {
       ).toFixed(1);
       draft.coin[index].count -= deductFromCoinsCount;
       draft.numOfCoinsUsed += deductFromCoinsCount;
-      draft.outputString = "";
     });
     return calculate(state, index + 1, skipIndex);
   }
@@ -154,7 +135,6 @@ function calculate(state, index, skipIndex) {
       ).toFixed(1);
       draft.coin[index].count = 0;
       draft.numOfCoinsUsed += draft.coin[index].count;
-      draft.outputString = "";
     });
     return calculate(state, index + 1, skipIndex);
   }
@@ -200,7 +180,7 @@ function setPayedAmount(state, action) {
   } else {
     return produce(state, (draft) => {
       draft.outputString = "You need to pay more money, input correct amount !";
-      draft.difference = 0;
+      draft.difference = -1;
     });
   }
 }
