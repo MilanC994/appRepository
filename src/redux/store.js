@@ -1,6 +1,5 @@
-import {createStore} from "redux";
+import { createStore } from "redux";
 import coinReducer from "./coins/coinReducer";
-
 
 const store = createStore(coinReducer);
 
