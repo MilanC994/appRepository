@@ -149,7 +149,7 @@ const coinReducer = (state = initialState, action) => {
     case SET_AMOUNT_TO_PAY: 
       return {
         ...state,
-        toPay: Number(randomIntFromInterval(100, 300) * 0.1).toFixed(1),
+        toPay: Number(randomIntFromInterval(100, 10000) * 0.1).toFixed(1),
         setterButtonsDisabled: true,
         payButtonDisabled: false
     }
