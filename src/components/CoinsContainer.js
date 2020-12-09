@@ -45,9 +45,24 @@ const CoinsContainer = () => {
           <tbody>
             <tr>
               <td><CustomBadge ><h5>Value:</h5></CustomBadge></td>
-              <td><input  type="number" value={value} className="form-control" name="value" step={0.1} onChange = {(e) => setValue(+e.target.value)} /></td>
+              <td>
+                <input 
+                  type="number" 
+                  value={value} 
+                  className="form-control" 
+                  name="value" step={0.1} 
+                  onChange = {(e) => setValue(+e.target.value)} 
+                />
+              </td>
               <td><CustomBadge ><h5>Count:</h5></CustomBadge></td>
-              <td><input type="number" value={count} className="form-control" name="count" onChange = {(e) => setCount(+e.target.value)} /></td>
+              <td>
+                <input 
+                  type="number" 
+                  value={count} 
+                  className="form-control" 
+                  name="count" onChange = {(e) => setCount(+e.target.value)} 
+                />
+              </td>
               <td>
               <button
                 className="btn-primary btn-success ml-2"  
