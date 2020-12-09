@@ -4,14 +4,14 @@ import "./App.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
-import Coins from "./components/Coins";
+import CoinsContainer from "./components/CoinsContainer";
 
 function App() {
   return (
     <Provider store={store}>
       <div className="App">
         <h1 style={{ color: "orange" }}>Change Application</h1>
-        <Coins />
+        <CoinsContainer />
       </div>
     </Provider>
   );

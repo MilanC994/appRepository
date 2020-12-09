@@ -2,221 +2,168 @@ import {
   INCREMENT_COIN,
   DECREMENT_COIN,
   CALCULATE,
-  SETTOPAY,
-  SETPAYED,
-} from "./coinExport";
-import produce from "immer";
+  SET_AMOUNT_TO_PAY,
+  ADD_COIN,
+  REMOVE_COIN
+} from "./coinExport"
+import { sort } from 'ramda'
 
 const initialState = {
-  coin: [
-    { id: 0, value: 5.0, count: 10 },
-    { id: 1, value: 2.0, count: 10 },
-    { id: 2, value: 1.0, count: 10 },
-    { id: 3, value: 0.5, count: 10 },
-    { id: 4, value: 0.2, count: 10 },
-    { id: 5, value: 0.1, count: 10 },
+  coins: [
+    { value: 5, count: 10 },    
+    { value: 2, count: 10 },
+    { value: 1, count: 10 },
+    { value: 0.5, count: 10 },
+    { value: 0.2, count: 10 },
+    { value: 0.1, count: 10 },
   ],
   toPay: 0,
-  payed: 0,
-  difference: 0,
   outputString: "",
-  buttonDIsabled: false,
-  disablePay: true,
-  numOfCoinsUsed: 0,
+  setterButtonsDisabled: false,
+  payButtonDisabled: true
 };
 
-function doStaff(state) {
-  let finalState = {
-    ...state,
-    numOfCoinsUsed: 99999,
-  };
-
-  let pomState = { ...state, numOfCoinsUsed: 0 };
-
-  let redoIndex = 0;
-  let limit = 0;
-
-  //Calculating using modified greedy algorithm
-  //take one index, first max number of times, then max-1, max-2..
-  //compare number of coins used in each calculation and save the lowest
-  while (redoIndex < pomState.coin.length) {
-    if (pomState.coin[redoIndex].value > pomState.difference) redoIndex++;
-
-    let maxNum = Math.floor(
-      pomState.difference / pomState.coin[redoIndex].value
-    );
-
-    maxNum =
-      maxNum > pomState.coin[redoIndex].count
-        ? pomState.coin[redoIndex].count
-        : maxNum;
-
-    let deduct = maxNum - limit;
-
-    if (deduct > 0) {
-      pomState = produce(pomState, (draft) => {
-        draft.difference = (
-          draft.difference -
-          draft.coin[redoIndex].value * deduct +
-          0.001
-        ).toFixed(1);
-        draft.coin[redoIndex].count -= deduct;
-        draft.numOfCoinsUsed += deduct;
-        draft.outputString = "";
-      });
-
-      pomState = calculate(pomState, 0, redoIndex);
-
-      if (pomState.numOfCoinsUsed < finalState.numOfCoinsUsed)
-        finalState = { ...pomState };
-
-      pomState = { ...state, numOfCoinsUsed: 0 };
-
-      limit++;
-    } else {
-      redoIndex++;
-      limit = 0;
-    }
-  }
-
-  if (finalState.difference != 0) {
-    return {
-      ...state,
-      outputString: "Not Possible to return change",
-      disablePay: false,
-      buttonDIsabled: true,
-    };
-  }
-  return { ...finalState, outputString: "Accepted!" };
-}
-
-function calculate(state, index, skipIndex, numofCoins) {
-  if (index === skipIndex) index++;
-
-  if (state.difference == 0) {
-    return state;
-  }
-
-  if (index > 5 && state.difference != 0) {
-    return {
-      ...state,
-      numOfCoinsUsed: 99999,
-    };
-  }
-
-  const deductFromCoinsCount = Math.floor(
-    state.difference / state.coin[index].value
-  );
-
-  if (
-    deductFromCoinsCount > 0 &&
-    state.coin[index].count >= deductFromCoinsCount
-  ) {
-    state = produce(state, (draft) => {
-      draft.difference = (
-        draft.difference -
-        state.coin[index].value * deductFromCoinsCount +
-        0.001
-      ).toFixed(1);
-      draft.coin[index].count -= deductFromCoinsCount;
-      draft.numOfCoinsUsed += deductFromCoinsCount;
-    });
-    return calculate(state, index + 1, skipIndex);
-  }
-  if (
-    deductFromCoinsCount > 0 &&
-    state.coin[index].count < deductFromCoinsCount
-  ) {
-    state = produce(state, (draft) => {
-      draft.difference = (
-        draft.difference -
-        state.coin[index].value * state.coin[index].count +
-        0.001
-      ).toFixed(1);
-      draft.coin[index].count = 0;
-      draft.numOfCoinsUsed += draft.coin[index].count;
-    });
-    return calculate(state, index + 1, skipIndex);
-  }
-
-  if (
-    state.difference < state.coin[index].value ||
-    state.coin[index].count < 1
-  ) {
-    return calculate(state, index + 1, skipIndex);
-  }
-}
-
 function incrCoin(state = initialState, action) {
-  return produce(state, (draft) => {
-    draft.coin[action.payload].count += 1;
-  });
+  return {
+    ...state,
+    coins: [
+      ...state.coins.map(c =>  c.value === action.payload ?  {...c, count: c.count + 1 } : c )
+    ]
+  }
 }
 function decrCoin(state, action) {
-  if (state.coin[action.payload].count > 0) {
-    return produce(state, (draft) => {
-      draft.coin[action.payload].count -= 1;
-    });
-  } else return state;
-}
-function setPayedAmount(state, action) {
-  var result = Number(action.payload - state.toPay).toFixed(1);
-
-  if (result > 0) {
-    return produce(state, (draft) => {
-      draft.payed = action.payload;
-      draft.difference = Number(action.payload - draft.toPay).toFixed(1);
-      draft.disablePay = true;
-      draft.buttonDIsabled = false;
-      draft.outputString = "";
-    });
-  } else if (result == 0) {
-    return produce(state, (draft) => {
-      draft.difference = 0;
-      draft.disablePay = true;
-      draft.buttonDIsabled = false;
-      draft.outputString = "Accepted";
-    });
-  } else {
-    return produce(state, (draft) => {
-      draft.outputString = "You need to pay more money, input correct amount !";
-      draft.difference = -1;
-    });
+  return {
+    ...state,
+    coins: [
+      ...state.coins.map(c =>  c.value === action.payload && c.count > 0 ? {...c, count: c.count - 1 } : c )
+    ]
   }
+}
+const addCoin = (state, newCoin) => {
+  if(! newCoin.value)
+    return{
+      ...state,
+      outputString: "Value must be higher than 0"
+    }
+  const alreadyExists = state.coins.find(coin => coin.value === newCoin.value)
+  if(alreadyExists){
+    return {
+      ...state,
+      coins:[
+        ...state.coins.map(coin => coin.value !== newCoin.value ?  coin : { ...coin, count: coin.count + newCoin.count})
+      ]
+    }
+  }
+  
+  const byValue = function(a, b) { return b.value - a.value }
+  return {
+    ...state,
+    coins: sort(byValue,[...state.coins, newCoin])
+  }
+  return state
+}
+const updateCoins = (state, solution, amount) => {
+const regex = /(\[)|(\])|({)|(")|({)|(})/g
+  return {
+    ...state,
+    coins:[
+      ...state.coins.map(coin => {
+        const cointToUpdate = solution.find(c => c.value === coin.value)
+        return cointToUpdate ? { ...coin, count: coin.count - cointToUpdate.count } : coin
+      })
+    ],
+    outputString: JSON.stringify(solution).replace(regex, ' ') + ' = ' + amount,
+    payButtonDisabled: true,
+    setterButtonsDisabled: false
+  }
+
 }
 
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+const calculateChange = (state, payedAmount) => {
+  const { coins, toPay } = state
+  const amount = Number(payedAmount - toPay).toFixed(1);
+  let minCount = null
+  const recurse = (amount, index, coinCount) => {
+
+    if(minCount && coinCount >= minCount)
+      return null
+    
+    if(amount == 0){
+      if(minCount == null || coinCount < minCount){
+        minCount = coinCount
+        return [] //success
+      }
+      return null //nonOptimal
+    }
+    if(index >= coins.length)
+      return null // failure
+    let bestChange = null
+    const coin = coins[index]
+    
+    const canUse = Math.min(Math.floor((amount/coin.value).toFixed(1)), coin.count)
+    for(let count = canUse; count>=0; count --){
+      let change = recurse((amount - coin.value * count).toFixed(1), index + 1, coinCount + count)
+      if(change != null){
+        if(count){
+          change && change.push({ value: coin.value, count })
+        }
+        bestChange = change
+
+      }
+      if(index === coins.length -1)
+        break
+    }
+    return bestChange
+  }
+  if(amount >= 0){
+    const result = recurse(amount, 0, 0)
+    return  result ? updateCoins(state, result, amount) : { ...state, outputString:"Not Possible"}
+  }
+  return{ ...state, outputString:"You need to pay more money"}
+
+
+}
+
+const removeCoin = (state, coinValue) =>{
+  return{
+    ...state,
+    coins: [
+      ...state.coins.filter(coin => coin.value !==coinValue)
+    ]
+  }
+}
 const coinReducer = (state = initialState, action) => {
-  //from : https://daveceddia.com/react-redux-immutability-guide/#redux-add-an-item-to-an-array
   switch (action.type) {
-    case INCREMENT_COIN: {
+    case INCREMENT_COIN: 
       return incrCoin(state, action);
-    }
-    case DECREMENT_COIN: {
+    
+    case DECREMENT_COIN:
       return decrCoin(state, action);
+    
+    case CALCULATE: 
+      return calculateChange(state, action.payload)
+
+    case SET_AMOUNT_TO_PAY: 
+      return {
+        ...state,
+        toPay: Number(randomIntFromInterval(100, 300) * 0.1).toFixed(1),
+        setterButtonsDisabled: true,
+        payButtonDisabled: false
     }
 
-    case CALCULATE: {
-      return doStaff(state);
-    }
-    case SETPAYED: {
-      return setPayedAmount(state, action);
-    }
-
-    case SETTOPAY: {
-      return produce(state, (draft) => {
-        draft.toPay = Number(randomIntFromInterval(100, 300) * 0.1).toFixed(1);
-        draft.buttonDIsabled = true;
-        draft.disablePay = false;
-      });
-    }
+    case ADD_COIN: 
+      return addCoin(state, action.payload)
+    
+    case REMOVE_COIN:
+      return removeCoin(state, action.payload)
 
     default:
       return state;
   }
 };
 
-export default coinReducer;
+export default coinReducer

@@ -1,5 +1,6 @@
-export const INCREMENT_COIN = "INCREMENT_COIN";
-export const DECREMENT_COIN = "DECREMENT_COIN";
-export const CALCULATE = "CALCULATE";
-export const SETTOPAY = "SETTOPAY";
-export const SETPAYED = "SETPAYED";
+export const INCREMENT_COIN = 'INCREMENT_COIN'
+export const DECREMENT_COIN = 'DECREMENT_COIN'
+export const CALCULATE = 'CALCULATE'
+export const SET_AMOUNT_TO_PAY = 'SET_AMOUNT_TO_PAY'
+export const ADD_COIN = 'ADD_COIN'
+export const REMOVE_COIN = 'REMOVE_COIN'
