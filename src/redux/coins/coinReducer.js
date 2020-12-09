@@ -60,7 +60,6 @@ const addCoin = (state, newCoin) => {
     ...state,
     coins: sort(byValue,[...state.coins, newCoin])
   }
-  return state
 }
 const updateCoins = (state, solution, amount) => {
 const regex = /(\[)|(\])|({)|(")|({)|(})/g
