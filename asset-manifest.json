@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/appRepository/static/css/main.5cb4b693.chunk.css",
-    "main.js": "/appRepository/static/js/main.194600cb.chunk.js",
-    "main.js.map": "/appRepository/static/js/main.194600cb.chunk.js.map",
+    "main.css": "/appRepository/static/css/main.9f57dcc0.chunk.css",
+    "main.js": "/appRepository/static/js/main.bd33c7a4.chunk.js",
+    "main.js.map": "/appRepository/static/js/main.bd33c7a4.chunk.js.map",
     "runtime-main.js": "/appRepository/static/js/runtime-main.38f3071a.js",
     "runtime-main.js.map": "/appRepository/static/js/runtime-main.38f3071a.js.map",
     "static/css/2.3e575b9f.chunk.css": "/appRepository/static/css/2.3e575b9f.chunk.css",
-    "static/js/2.7ca403d4.chunk.js": "/appRepository/static/js/2.7ca403d4.chunk.js",
-    "static/js/2.7ca403d4.chunk.js.map": "/appRepository/static/js/2.7ca403d4.chunk.js.map",
+    "static/js/2.41f248b5.chunk.js": "/appRepository/static/js/2.41f248b5.chunk.js",
+    "static/js/2.41f248b5.chunk.js.map": "/appRepository/static/js/2.41f248b5.chunk.js.map",
     "index.html": "/appRepository/index.html",
-    "precache-manifest.b2cedcc018f5d75337e421e7b2d3c791.js": "/appRepository/precache-manifest.b2cedcc018f5d75337e421e7b2d3c791.js",
+    "precache-manifest.dffd49a49b8eb4953f3110cff280b565.js": "/appRepository/precache-manifest.dffd49a49b8eb4953f3110cff280b565.js",
     "service-worker.js": "/appRepository/service-worker.js",
     "static/css/2.3e575b9f.chunk.css.map": "/appRepository/static/css/2.3e575b9f.chunk.css.map",
-    "static/css/main.5cb4b693.chunk.css.map": "/appRepository/static/css/main.5cb4b693.chunk.css.map",
-    "static/js/2.7ca403d4.chunk.js.LICENSE.txt": "/appRepository/static/js/2.7ca403d4.chunk.js.LICENSE.txt",
-    "static/media/App.css": "/appRepository/static/media/background.e5d7fc18.jpg"
+    "static/css/main.9f57dcc0.chunk.css.map": "/appRepository/static/css/main.9f57dcc0.chunk.css.map",
+    "static/js/2.41f248b5.chunk.js.LICENSE.txt": "/appRepository/static/js/2.41f248b5.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/appRepository/static/media/coinIcon.48a5fd0f.png"
   },
   "entrypoints": [
     "static/js/runtime-main.38f3071a.js",
     "static/css/2.3e575b9f.chunk.css",
-    "static/js/2.7ca403d4.chunk.js",
-    "static/css/main.5cb4b693.chunk.css",
-    "static/js/main.194600cb.chunk.js"
+    "static/js/2.41f248b5.chunk.js",
+    "static/css/main.9f57dcc0.chunk.css",
+    "static/js/main.bd33c7a4.chunk.js"
   ]
 }
