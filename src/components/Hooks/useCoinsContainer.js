@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, useEffect } from 'react'
 import useInputField from './useInputField'
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,16 +12,14 @@ import {
   
   
    const useCoinsContainer = () => {
-    const { value: count, setValue: setCount } = useInputField(0)
-    const { value, setValue } = useInputField(0)
 
-    const coin = useMemo(() => {
-         return { count, value } 
-        }, [count, value])
-
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const toggleAddCoinDialog = useCallback(() =>{
+       setIsDialogOpen(!isDialogOpen)
+    },[isDialogOpen])
     const getCoins = state => state.coins
     const coins = useSelector(getCoins)
-
+    
     const getSetterButtonsStatus = state => state.setterButtonsDisabled
     const setterButtonsStatus = useSelector(getSetterButtonsStatus)
     
@@ -52,19 +50,13 @@ import {
          dispatch(setToPay())
       },[])
 
-    const addNewCoin = useCallback( () => {
-        dispatch(addCoin(coin))
-     },[coin])
-
     const deleteCoin = useCallback( coinValue => {
         dispatch(removeCoin(coinValue))
      },[/* value ?*/])
 
      return {
-        count,
-        setCount,
-        value,
-        setValue,
+        isDialogOpen,
+        toggleAddCoinDialog,
         coins,
         setterButtonsStatus,
         toPay,
@@ -74,7 +66,6 @@ import {
         coinDecrement,
         calculate,
         setToPayAmount,
-        addNewCoin,
         deleteCoin
     }
   }

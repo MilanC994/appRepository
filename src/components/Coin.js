@@ -1,48 +1,61 @@
-import React from "react";
-import CustomBadge from "./CustomBadge"
+import React from 'react'
+import { Button, Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 
 const  Coin= ({value, count, increment, decrement, disable, remove}) => {
+  const addRemoveButtonsStyle = {
+    background: "transparent",
+    fontSize: "30px"
+  }
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Remove Coin
+    </Tooltip>
+  );
+  
+
   return (
-    <tr>
-      <td>
-        <CustomBadge>
-          <h5>Value:{value}</h5>
-        </CustomBadge>
-      </td>
-      <td>
-        <CustomBadge>
-          <h5>Count:{count}</h5>
-        </CustomBadge>
-      </td>
-      <td>
-        <button
+    <Card id={value}  className="coinCard border-secondary" style={{ background:"transparent" }}>
+      <div className="cardImageDiv" style={{ position:"relative" }}>
+        <OverlayTrigger
+          placement="right"
+          delay={{ show: 250, hide: 400 }}
+          overlay={renderTooltip}
+        >
+          <button
+            onClick={() => remove(value) }
+            className="customBtn"
+            style={{ background:"transparent", width:"25px", height:"25px", color:"white", position:"absolute", right:"0px", top:"0px"}}
+          >
+            X
+          </button>
+        </OverlayTrigger>
+        <p className="h1 coinValue" >{value}</p>
+      </div>
+      <Card.Body style={{ margin:"auto", display:"flex" }}>
+        <Button
+          className="customBtn"
+          style={addRemoveButtonsStyle}
+          variant="primary"
           disabled={disable}
           onClick={() => increment(value)}
-          className="customBtn btn btn-secondary m-2"
         >
-          <h3>+</h3>
-        </button>
-      </td>
-      <td>
-        <button
-          disabled={disable}
-          onClick={() => decrement(value)}
-          className="customBtn btn btn-danger  m-2"
+          +
+        </Button>
+        <div className="coinCount" >
+          <h2>{count}</h2>
+        </div>
+        <Button 
+          className="customBtn" 
+          style={addRemoveButtonsStyle} 
+          variant="danger" 
+          disabled={disable} 
+          onClick={() => decrement(value)} 
         >
-          <h3>-</h3>
-        </button>
-      </td>
-      <td>
-        <button
-          disabled={disable}
-          onClick={() => remove(value)}
-          className="btn btn-danger  m-2"
-        >
-          <h5>Remove</h5>
-        </button>
-      </td>
-    </tr>
+          -
+        </Button>
+    </Card.Body>
+  </Card>
   );
 }
 

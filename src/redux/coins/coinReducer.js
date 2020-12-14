@@ -40,17 +40,12 @@ function decrCoin(state, action) {
   }
 }
 const addCoin = (state, newCoin) => {
-  if(! newCoin.value)
-    return{
-      ...state,
-      outputString: "Value must be higher than 0"
-    }
   const alreadyExists = state.coins.find(coin => coin.value === newCoin.value)
   if(alreadyExists){
     return {
       ...state,
       coins:[
-        ...state.coins.map(coin => coin.value !== newCoin.value ?  coin : { ...coin, count: coin.count + newCoin.count})
+        ...state.coins.map(coin => coin.value !== +newCoin.value ?  coin : { ...coin, count: coin.count + newCoin.count})
       ]
     }
   }
@@ -73,7 +68,8 @@ const regex = /(\[)|(\])|({)|(")|({)|(})/g
     ],
     outputString: JSON.stringify(solution).replace(regex, ' ') + ' = ' + amount,
     payButtonDisabled: true,
-    setterButtonsDisabled: false
+    setterButtonsDisabled: false,
+    toPay:0
   }
 
 }
