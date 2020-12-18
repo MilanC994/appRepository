@@ -4,8 +4,7 @@ import usePay from './Hooks/usePay'
 
 const Pay = ({ toPay, disable, calculate }) => {
     const {
-      payed,
-      setPayed,
+      payedField,
       payedError,
       onPayClick,
       payButtonDisabled
@@ -32,8 +31,7 @@ const Pay = ({ toPay, disable, calculate }) => {
             style={inputAmountStyle} 
             type="number" 
             step={0.1} 
-            value={payed} 
-            onChange={(e) => setPayed(+e.target.value)}  
+            { ...payedField }  
             disabled={disable}
             min={0.1}  
             placeholder='Enter amount'
@@ -43,8 +41,8 @@ const Pay = ({ toPay, disable, calculate }) => {
         <Button 
           style={payButtonStyle} 
           variant="success" 
-          disabled={ disable || payButtonDisabled } 
-          onClick={()=> onPayClick(payed)}
+          disabled={disable || payButtonDisabled} 
+          onClick={onPayClick}
         >
             Pay
         </Button>

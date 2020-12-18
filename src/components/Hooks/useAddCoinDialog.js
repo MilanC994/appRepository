@@ -12,8 +12,9 @@ import {
   }
 
 const useAddCoinDialog = (handleCloseDialog) =>{
-    const { value: count, setValue: setCount, error: countInputError, setError: setCoinInputError } = useInputField('', validCount)
-    const { value, setValue, error: valueInputError, setError: setValueInputError } = useInputField('', validValue)
+    
+    const { valueField: countField, value:count, error: countInputError, clearState: clearCount } = useInputField('', validCount)
+    const { valueField: valueField, value, error: valueInputError, clearState: clearValue } = useInputField('', validValue)
 
     const disableSubmitButton = useMemo(() => {
         return  isNullOrEmpty(count) || isNullOrEmpty(value) || countInputError !== false || valueInputError !== false ? true : false
@@ -26,12 +27,10 @@ const useAddCoinDialog = (handleCloseDialog) =>{
         }, [count, value])
     
     const handleAddCoinDialogClose = useCallback(() => {
-        setValueInputError(null)
-        setCoinInputError(null)
-        setValue('')
-        setCount('')
+        clearCount()
+        clearValue()
         handleCloseDialog()
-    },[handleCloseDialog, setCoinInputError, setValueInputError, setValue, setCount])
+    }, [clearCount, clearValue, handleCloseDialog])
     
     const addNewCoin = useCallback( () => {
         dispatch(addCoin(coin))
@@ -39,8 +38,8 @@ const useAddCoinDialog = (handleCloseDialog) =>{
         },[coin])
     
     return {
-        setCount,
-        setValue,
+        valueField,
+        countField,
         countInputError,
         valueInputError,
         disableSubmitButton,

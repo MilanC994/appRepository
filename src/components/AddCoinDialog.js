@@ -4,8 +4,8 @@ import { Modal, Button, Form } from 'react-bootstrap'
 
 const AddCoinDialog= ({ isDialogOpen, handleDialogClose }) => {
     const { 
-        setValue, 
-        setCount, 
+        valueField, 
+        countField, 
         countInputError,
         valueInputError,
         disableSubmitButton,
@@ -24,10 +24,10 @@ const AddCoinDialog= ({ isDialogOpen, handleDialogClose }) => {
         <Form>
             <Form.Group>
                 <Form.Label>Value<sup>*</sup></Form.Label>
-                <Form.Control type="number" step={0.1} min={0.1} onChange={(e) => setValue(+e.target.value)} placeholder="Enter Value" />
+                <Form.Control type="number" step={0.1} min={0.1}  placeholder="Enter Value" { ...valueField } />
                 <p style={errorStyle}>{valueInputError}</p>
                 <Form.Label>Count<sup>*</sup></Form.Label>
-                <Form.Control type="number" min={1} onChange={(e) => setCount(+e.target.value)} placeholder="Enter Count" />
+                <Form.Control type="number" min={1} placeholder="Enter Count" { ...countField } />
                 <p style={errorStyle}>{countInputError}</p>
             </Form.Group>           
         </Form>

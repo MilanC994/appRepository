@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react'
-import useInputField from './useInputField'
+import { useCallback, useState,  } from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import {
     incrementCoin,

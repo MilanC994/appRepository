@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import _ from 'lodash'
 
 const INPUT_DEBOUNCE_TIME = 500
@@ -11,14 +11,22 @@ const useInputField = (defaultValue, validateFn = null) => {
         setError(error)
       },INPUT_DEBOUNCE_TIME),[])
 
-    const setValue = (value) => {
+    const onChange = useCallback(e => {
+        const value = +e.target.value
         if(validateFn !== null){
             const validate =  validateFn(value)
             validate === true ? setInputError(false) : setInputError(validate)
         }
         setInputValue(value)
-    }
-    return { value, setValue, error, setError }
+    },[validateFn, setInputError, setInputValue])
+
+    const clearState = useCallback(() => {
+        setInputValue('')
+        setError(null)
+    }, [setInputValue, setError])
+
+    const valueField = { value, onChange }
+    return { valueField, value, error, clearState }
 }
 
 export default useInputField

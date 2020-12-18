@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react'
 import { isEmpty } from 'ramda'
 import useInputField from './useInputField'
 import { validPayment } from '../../utils/validation'
-import { calculateDiff } from '../../redux/coins/coinActions'
 
 const usePay = (requiredToPay, calculate) => {
     const validatePayedAmount = useCallback(
@@ -11,23 +10,23 @@ const usePay = (requiredToPay, calculate) => {
         },
         [requiredToPay],
     )
-    const { value: payed, setValue: setPayed, error: payedError, setError: setPayedError} = useInputField('', validatePayedAmount)
+
+    const { valueField: payedField, value: payed, error: payedError, clearState:clearPayedState } = useInputField('', validatePayedAmount)
     const payButtonDisabled = useMemo(
         () => {
             return isEmpty(payed) || payedError !== false ? true : false   
         }
     )
     const onPayClick = useCallback(
-        (value) => {
-            setPayed('')
-            setPayedError(null)
-            calculate(value)
+        () => {
+            calculate(payed)
+            clearPayedState()
+
         },
-        [calculate, setPayed, setPayedError],
+        [payed, calculate, clearPayedState],
     )
     return {
-        payed,
-        setPayed,
+        payedField,
         payedError,
         onPayClick,
         payButtonDisabled
